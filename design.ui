@@ -113,7 +113,7 @@ border-color: black;
      <string>4</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="button_pcnt">
+   <widget class="QPushButton" name="button_prcnt">
     <property name="geometry">
      <rect>
       <x>1</x>
