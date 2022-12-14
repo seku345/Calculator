@@ -115,8 +115,8 @@ class Ui_Calculator(object):
 "</head>\n"
 "<body>\n"
 "    <p align=\"right\">\n"
-"    <span style=\" font-size:20pt;\">0</span>\n"
-"    </p>\n"
+"    <span style=\" font-size:19pt;\">0</span>\n"
+"</p>\n"
 "</body>\n"
 "</html>"))
         self.button_1.setText(_translate("Calculator", "1"))

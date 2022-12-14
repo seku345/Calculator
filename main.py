@@ -31,36 +31,32 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.button_clear.released.connect(self.clicked)
         self.ui.button_equal.released.connect(self.clicked)
         
+        self.equation = '0'
         self.current_score = '0'
         self.active_button = None
-        self.score_html_before = '<html><head><style>p {border: 1px solid black;padding: 10px;}</style></head><body><p align=\"right\"><span style=\" font-size:20pt;\">'
+        self.score_html_before = '<html><head><style>p {border: 1px solid black;padding: 10px;}</style></head><body><p align=\"right\"><span style=\" font-size:19pt;\">'
         self.score_html_after = "</span></p></body></html>"
-        
+    
+
+    
     def clicked(self):
+    
+        def checking_num(score, digit: str) -> str:
+            if len(score) < 18:
+                if score == '0':
+                    score = digit
+                else:
+                    score += digit
+            return score
+    
         button_name = self.sender()
         self.active_button = button_name.objectName()
         match self.active_button[7:]:
             case '0':
-                print('I am a zero!')
-                self.current_score += '1'
-            case '1':
-                ...
-            case '2':
-                ...
-            case '3':
-                ...
-            case '4':
-                ...
-            case '5':
-                ...
-            case '6':
-                ...
-            case '7':
-                ...
-            case '8':
-                ...
-            case '9':
-                ...
+                if self.current_score[0] != '0' and len(self.current_score) < 18:
+                    self.current_score += '0'
+            case '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' as digit:
+                self.current_score = checking_num(self.current_score, digit)
             case 'plus':
                 ...
             case 'minus':
@@ -72,14 +68,16 @@ class MyWindow(QtWidgets.QMainWindow):
             case 'sqrt':
                 ...
             case 'dot':
-                ...
+                if self.current_score.count('.') < 1:
+                    self.current_score += '.'
             case 'prcnt':
                 ...
             case 'clear':
-                ...
+                self.current_score = '0'
+                self.equation = '0'
             case 'equal':
                 ...
-        self.ui.score.setText(f'{self.current_score}')
+        self.ui.score.setText(f'{self.score_html_before}{self.current_score}{self.score_html_after}')
         
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
