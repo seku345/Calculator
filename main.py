@@ -32,6 +32,8 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.button_equal.released.connect(self.clicked)
         
         self.equation = '0'
+        self.last_sign = None
+        self.was_num = True
         self.current_score = '0'
         self.active_button = None
         self.score_html_before = '<html><head><style>p {border: 1px solid black;padding: 10px;}</style></head><body><p align=\"right\"><span style=\" font-size:19pt;\">'
@@ -55,28 +57,67 @@ class MyWindow(QtWidgets.QMainWindow):
             case '0':
                 if self.current_score[0] != '0' and len(self.current_score) < 18:
                     self.current_score += '0'
+                    if not self.was_num:
+                        self.equation += self.last_sign
+                        self.current_score = '0'
+                    self.was_num = True
             case '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' as digit:
                 self.current_score = checking_num(self.current_score, digit)
+                if not self.was_num:
+                    self.equation += self.last_sign
+                    self.current_score = digit
+                self.was_num = True
             case 'plus':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '+'
+                self.was_num = False
+                self.current_score = self.last_sign
             case 'minus':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '-'
+                self.was_num = False
+                self.current_score = self.last_sign
             case 'prod':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '*'
+                self.was_num = False
+                self.current_score = self.last_sign
             case 'div':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '/'
+                self.was_num = False
+                self.current_score = self.last_sign
             case 'sqrt':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '√'
+                self.was_num = False
+                self.current_score = str(eval(self.current_score)**0.5)
+                self.equation = self.current_score
             case 'dot':
-                if self.current_score.count('.') < 1:
+                if self.current_score.count('.') < 1 and self.was_num:
                     self.current_score += '.'
             case 'prcnt':
-                ...
+                if self.was_num:
+                    self.equation += self.current_score
+                self.last_sign = '%'
+                self.was_num = False
+                self.current_score = self.last_sign
             case 'clear':
                 self.current_score = '0'
                 self.equation = '0'
+                self.last_sign = None
+                self.was_num = True
             case 'equal':
-                ...
+                self.equation += self.current_score
+                if self.equation[0] == '0':
+                    self.equation = self.equation[1:]
+                self.current_score = str(eval(self.equation))
+                self.equation = '0'
         self.ui.score.setText(f'{self.score_html_before}{self.current_score}{self.score_html_after}')
         
     def keyPressEvent(self, e):
